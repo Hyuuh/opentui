@@ -17,6 +17,8 @@ import { NativeMeasureTargetKind, resolveRenderLib, type NativeRenderableHandle 
 
 const BrandedEditBufferRenderable: unique symbol = Symbol.for("@opentui/core/EditBufferRenderable")
 
+export type { WrapIndent }
+
 const emptyVisualCursor: VisualCursor = Object.freeze({
   visualRow: 0,
   visualCol: 0,

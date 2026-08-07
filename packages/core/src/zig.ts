@@ -1215,6 +1215,10 @@ function getOpenTUILib(libPath?: string) {
       args: ["u32", "u8"],
       returns: "void",
     },
+    textBufferViewSetWrapIndent: {
+      args: ["u32", "u8"],
+      returns: "void",
+    },
     textBufferViewSetFirstLineOffset: {
       args: ["u32", "u32"],
       returns: "void",
@@ -2936,6 +2940,7 @@ export interface RenderLib extends AudioEngineLib {
   textBufferViewSetWrapWidth: (view: TextBufferViewHandle, width: number) => void
   textBufferViewSetWrapMode: (view: TextBufferViewHandle, mode: "none" | "char" | "word") => void
   textBufferViewSetTextAlign: (view: TextBufferViewHandle, alignment: "left" | "center" | "right") => void
+  textBufferViewSetWrapIndent: (view: TextBufferViewHandle, indent: "none" | "same") => void
   textBufferViewSetFirstLineOffset: (view: TextBufferViewHandle, offset: number) => void
   textBufferViewSetViewportSize: (view: TextBufferViewHandle, width: number, height: number) => void
   textBufferViewSetViewport: (view: TextBufferViewHandle, x: number, y: number, width: number, height: number) => void
@@ -5306,6 +5311,11 @@ class FFIRenderLib implements RenderLib {
   public textBufferViewSetTextAlign(view: Pointer, alignment: "left" | "center" | "right"): void {
     const alignValue = alignment === "left" ? 0 : alignment === "center" ? 1 : 2
     this.opentui.symbols.textBufferViewSetTextAlign(view, alignValue)
+  }
+
+  public textBufferViewSetWrapIndent(view: Pointer, indent: "none" | "same"): void {
+    const indentValue = indent === "same" ? 1 : 0
+    this.opentui.symbols.textBufferViewSetWrapIndent(view, indentValue)
   }
 
   public textBufferViewSetFirstLineOffset(view: Pointer, offset: number): void {
