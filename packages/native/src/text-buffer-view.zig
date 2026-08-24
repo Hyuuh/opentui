@@ -1521,6 +1521,24 @@ pub const UnifiedTextBufferView = struct {
 
     const CalculationMode = enum { render, measure };
 
+    /// Display-column width of a leading run of ASCII space/tab only.
+    /// Tabs use the same fixed tab width as the text buffer's character measurement.
+    fn accumulateLeadingIndentCols(bytes: []const u8, tab_width: u8, start_indent: u32) struct { indent: u32, finalized: bool } {
+        var indent = start_indent;
+        var i: usize = 0;
+        while (i < bytes.len) {
+            if (bytes[i] == ' ') {
+                indent += 1;
+            } else if (bytes[i] == '\t') {
+                indent += tab_width;
+            } else {
+                return .{ .indent = indent, .finalized = true };
+            }
+            i += 1;
+        }
+        return .{ .indent = indent, .finalized = false };
+    }
+
     fn calculateUnwrappedVirtualLines(
         allocator: Allocator,
         text_buffer: *UnifiedTextBuffer,
