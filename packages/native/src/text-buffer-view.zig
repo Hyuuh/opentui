@@ -2340,19 +2340,22 @@ pub const UnifiedTextBufferView = struct {
                 if (comptime wrap_mode == .word and calculation == .measure) {
                     if (wctx.word_line_first_chunk != null and wctx.word_line_chunks.items.len == 0) {
                         const chunk = wctx.word_line_first_chunk.?;
-                        measure_cache_chunk = chunk;
                         const first_width = wctx.lineWrapWidth();
-                        measure_cache_first_width = first_width;
-                        if (chunk.getWordMeasureSummary(
-                            wctx.wrap_w,
-                            first_width,
-                            wctx.text_buffer.tabWidth(),
-                            wctx.text_buffer.widthMethod(),
-                        )) |summary| {
-                            wctx.result.line_count += summary.line_count;
-                            wctx.result.width_cols_max = @max(wctx.result.width_cols_max, summary.width_max);
-                            wctx.document_cell_offset += chunk.width_cols;
-                            used_measure_cache = true;
+                        // The cached summary does not include continuation padding.
+                        if (wctx.wrap_indent == .none) {
+                            measure_cache_chunk = chunk;
+                            measure_cache_first_width = first_width;
+                            if (chunk.getWordMeasureSummary(
+                                wctx.wrap_w,
+                                first_width,
+                                wctx.text_buffer.tabWidth(),
+                                wctx.text_buffer.widthMethod(),
+                            )) |summary| {
+                                wctx.result.line_count += summary.line_count;
+                                wctx.result.width_cols_max = @max(wctx.result.width_cols_max, summary.width_max);
+                                wctx.document_cell_offset += chunk.width_cols;
+                                used_measure_cache = true;
+                            }
                         }
                     }
                 }
