@@ -1305,6 +1305,10 @@ function getOpenTUILib(libPath?: string) {
       args: ["u32", "u8"],
       returns: "void",
     },
+    editorViewSetWrapIndent: {
+      args: ["u32", "u8"],
+      returns: "void",
+    },
     editorViewGetVirtualLineCount: {
       args: ["u32"],
       returns: "u32",
@@ -3043,6 +3047,7 @@ export interface RenderLib extends AudioEngineLib {
   editorViewGetViewport: (view: EditorViewHandle) => { offsetY: number; offsetX: number; height: number; width: number }
   editorViewSetScrollMargin: (view: EditorViewHandle, margin: number) => void
   editorViewSetWrapMode: (view: EditorViewHandle, mode: "none" | "char" | "word") => void
+  editorViewSetWrapIndent: (view: EditorViewHandle, indent: "none" | "same") => void
   editorViewGetVirtualLineCount: (view: EditorViewHandle) => number
   editorViewGetTotalVirtualLineCount: (view: EditorViewHandle) => number
   editorViewGetTextBufferView: (view: EditorViewHandle) => TextBufferViewHandle
@@ -5592,6 +5597,11 @@ class FFIRenderLib implements RenderLib {
   public editorViewSetWrapMode(view: Pointer, mode: "none" | "char" | "word"): void {
     const modeValue = mode === "none" ? 0 : mode === "char" ? 1 : 2
     this.opentui.symbols.editorViewSetWrapMode(view, modeValue)
+  }
+
+  public editorViewSetWrapIndent(view: Pointer, indent: "none" | "same"): void {
+    const indentValue = indent === "same" ? 1 : 0
+    this.opentui.symbols.editorViewSetWrapIndent(view, indentValue)
   }
 
   public editorViewGetVirtualLineCount(view: Pointer): number {

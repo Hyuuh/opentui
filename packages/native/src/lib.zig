@@ -3015,6 +3015,16 @@ export fn editorViewSetWrapMode(view_handle: NativeHandle, mode: u8) void {
     object_ptr.setWrapMode(wrapMode);
 }
 
+export fn editorViewSetWrapIndent(view_handle: NativeHandle, indent: u8) void {
+    const object_ptr = acquireEditorView(view_handle) orelse return;
+    const wrapIndent: text_buffer.WrapIndent = switch (indent) {
+        0 => .none,
+        1 => .same,
+        else => .none,
+    };
+    object_ptr.setWrapIndent(wrapIndent);
+}
+
 // EditorView selection methods - delegate to TextBufferView
 export fn editorViewSetSelection(view_handle: NativeHandle, start: u32, end: u32, bgColor: ?[*]const u16, fgColor: ?[*]const u16) void {
     const object_ptr = acquireEditorView(view_handle) orelse return;
